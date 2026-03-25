@@ -4,116 +4,278 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vicente Tomás | Fontanería Valencia | 675 87 93 29</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Vicente Tomás, fontanero en Valencia con más de 15 años de experiencia. Servicio 24h, precios justos y trabajo garantizado. Llama: 675 87 93 29">
+    <link rel="icon" type="image/png" href="https://assets.zyrosite.com/5SVCo0KGnglwB9nV/fontaneriia-vicente-XdKkx5hV2W1SwOO0.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
+        :root {
+            --primary: #0EA5E9;
+            --secondary: #38BDF8;
+            --accent: #0284C7;
+            --teal-dark: #0369A1;
+            --teal-darker: #075985;
+            --light: #F0FDFA;
         }
+        html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--light);
+            overflow-x: hidden;
+            cursor: none;
+            background: #032f40;
+        }
+        #antigravity-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .droplets-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .custom-cursor {
+            position: fixed;
+            width: 24px;
+            height: 28px;
+            pointer-events: none;
+            z-index: 10001;
+            transition: transform 0.1s ease;
+        }
+        .custom-cursor::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.9), var(--secondary));
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 15px rgba(140, 133, 255, 0.6);
+        }
+        .custom-cursor::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+        }
+        .custom-cursor.hover { transform: scale(1.3); }
+        .cursor-trail-dot {
+            position: fixed;
+            width: 4px;
+            height: 5px;
+            background: var(--secondary);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 0 5px rgba(140, 133, 255, 0.5);
+        }
+        .progress-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+            align-items: center;
+        }
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(45, 212, 191, 0.3);
+            border: 2px solid var(--secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-dot.active {
+            background: var(--secondary);
+            transform: scale(1.4);
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+        }
+        .progress-dot:hover { transform: scale(1.2); }
+        .progress-drop {
+            position: absolute;
+            right: 50%;
+            transform: translateX(50%);
+            width: 5px;
+            height: 6px;
+            background: var(--secondary);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 0 8px rgba(140, 133, 255, 0.6);
+        }
+        .progress-dot.active .progress-drop {
+            animation: drop-fall-full 2s ease-in infinite;
+        }
+        @keyframes drop-fall-full {
+            0% { top: 10px; opacity: 0.9; transform: translateX(50%) scale(1); }
+            100% { top: 100vh; opacity: 0; transform: translateX(50%) scale(0.3); }
+        }
+        .progress-dot.active .progress-drop:nth-child(1) { animation-delay: 0s; }
+        .progress-dot.active .progress-drop:nth-child(2) { animation-delay: 0.4s; }
+        .progress-dot.active .progress-drop:nth-child(3) { animation-delay: 0.8s; }
+        .main-content { position: relative; z-index: 10; }
         .nav {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 15px 30px;
+            padding: 20px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(3, 47, 64, 0.9), transparent);
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(14, 165, 233, 0.15), transparent);
+            backdrop-filter: blur(10px);
         }
         .nav-logo {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-logo span { color: var(--secondary); }
+        .nav-phone {
             display: flex;
             align-items: center;
             gap: 10px;
-            text-decoration: none;
-            color: #fff;
-        }
-        .nav-logo img { width: 45px; height: auto; }
-        .nav-logo-name { font-size: 1rem; font-weight: 700; color: #38BDF8; }
-        .nav-phone {
             padding: 10px 20px;
-            background: rgba(56, 189, 248, 0.2);
-            border: 2px solid #38BDF8;
-            border-radius: 25px;
-            color: #fff;
+            background: rgba(140, 133, 255, 0.22);
+            border: 1px solid var(--secondary);
+            border-radius: 30px;
+            color: var(--light);
             text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
-        .nav-phone:hover { background: #38BDF8; }
-        .scroll-section { height: 600vh; position: relative; }
-        .canvas-container {
+        .nav-phone:hover {
+            background: var(--secondary);
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(140, 133, 255, 0.55);
+        }
+        .nav-phone .icon { font-size: 1rem; }
+        .section {
+            min-height: 100vh;
+            padding: 100px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        /* ==================== SCROLL ANIMATION SECTION ==================== */
+        .scroll-animation-section {
+            position: relative;
+            height: 600vh;
+            scroll-snap-align: none;
+        }
+        .scroll-animation-container {
             position: sticky;
             top: 0;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000;
+            background: radial-gradient(ellipse at center, #0a5a7a 0%, #032f40 70%);
         }
-        #animationCanvas {
-            max-width: 100vw;
-            max-height: 100vh;
+        #videoCanvas {
+            max-width: 90vw;
+            max-height: 90vh;
             object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
         }
-        .loading-overlay {
-            position: fixed;
+        .scroll-loading-overlay {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: #032f40;
+            height: 100vh;
+            background: rgba(3, 47, 64, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
-            transition: opacity 0.5s ease;
+            z-index: 10;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-        .loading-text { font-size: 1rem; color: #38BDF8; margin-bottom: 15px; }
-        .loading-progress { font-size: 2rem; font-weight: 700; }
-        .loading-bar {
-            width: 200px;
-            height: 3px;
-            background: rgba(255,255,255,0.2);
+        .scroll-loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .scroll-loading-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        .scroll-loading-progress {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--light);
+        }
+        .scroll-loading-bar {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 2px;
-            margin-top: 15px;
+            margin-top: 25px;
             overflow: hidden;
         }
-        .loading-bar-fill {
+        .scroll-loading-bar-fill {
             height: 100%;
-            background: #38BDF8;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             width: 0%;
             transition: width 0.3s ease;
         }
-        .scroll-indicator {
-            position: fixed;
+        .video-scroll-indicator {
+            position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            opacity: 0.8;
+            gap: 10px;
+            opacity: 0.7;
             transition: opacity 0.3s ease;
-            z-index: 100;
+            z-index: 5;
         }
-        .scroll-indicator.fade-out { opacity: 0; }
-        .scroll-mouse {
+        .video-scroll-indicator.fade-out { opacity: 0; }
+        .video-scroll-mouse {
             width: 24px;
-            height: 38px;
-            border: 2px solid #38BDF8;
+            height: 40px;
+            border: 2px solid var(--secondary);
             border-radius: 12px;
             position: relative;
         }
-        .scroll-mouse::before {
+        .video-scroll-mouse::before {
             content: '';
             position: absolute;
             top: 8px;
@@ -121,82 +283,1155 @@
             transform: translateX(-50%);
             width: 4px;
             height: 8px;
-            background: #38BDF8;
+            background: var(--secondary);
             border-radius: 2px;
-            animation: scrollDown 1.5s infinite;
+            animation: video-scroll-down 1.5s infinite;
         }
-        @keyframes scrollDown {
+        @keyframes video-scroll-down {
             0% { opacity: 1; transform: translateX(-50%) translateY(0); }
             100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
         }
-        .scroll-text { font-size: 0.7rem; color: #38BDF8; letter-spacing: 2px; }
-        .frame-counter {
-            position: fixed;
-            top: 80px;
-            right: 20px;
+        .video-scroll-text {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--light);
+        }
+        .video-frame-counter {
+            position: absolute;
+            top: 100px;
+            right: 60px;
+            font-size: 0.85rem;
+            font-variant-numeric: tabular-nums;
+            opacity: 0.5;
+            z-index: 5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* ==================== FIN SCROLL ANIMATION ==================== */
+
+        .section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .service-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(140, 133, 255, 0.25);
+            border-radius: 18px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(140, 133, 255, 0.12), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .service-card:hover::before { opacity: 1; }
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: 0 15px 40px rgba(140, 133, 255, 0.25);
+        }
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+        }
+        .service-card:hover .service-icon { transform: rotate(360deg) scale(1.2); }
+        .service-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .service-desc {
+            opacity: 0.75;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .service-price {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(45, 212, 191, 0.2);
+            font-size: 0.85rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .about-image { position: relative; }
+        .about-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 350px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(140, 133, 255, 0.35);
+        }
+        .about-image-placeholder {
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .about-experience-badge {
+            position: absolute;
+            bottom: 20px;
+            right: -10px;
+            background: var(--secondary);
+            color: var(--teal-darker);
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(140, 133, 255, 0.45);
+        }
+        .about-content h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .about-content p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .about-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .highlight-item .icon { color: var(--secondary); font-size: 1.1rem; }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 40px auto 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(140, 133, 255, 0.25);
+        }
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+        .stat-label {
             font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        .process-timeline { max-width: 900px; margin: 0 auto; }
+        .process-step {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(140, 133, 255, 0.35);
+        }
+        .step-content h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step-content p {
+            opacity: 0.75;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .step-time {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: rgba(140, 133, 255, 0.18);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--secondary);
+        }
+        .testimonials-section {
+            padding: 60px 40px;
+            min-height: auto;
+        }
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .google-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(140, 133, 255, 0.2);
+            border-radius: 30px;
+            margin-bottom: 20px;
+        }
+        .google-logo { width: 24px; height: 24px; }
+        .rating-stars { color: #FFD700; font-size: 1rem; }
+        .rating-score { font-weight: 700; font-size: 1.1rem; }
+        .rating-count { opacity: 0.7; font-size: 0.85rem; }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(140, 133, 255, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary);
+            box-shadow: 0 15px 40px rgba(140, 133, 255, 0.18);
+        }
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .testimonial-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .testimonial-info { flex: 1; }
+        .testimonial-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .testimonial-date {
+            font-size: 0.75rem;
             opacity: 0.6;
-            z-index: 100;
+        }
+        .testimonial-stars {
+            color: #FFD700;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .testimonial-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.85;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .testimonial-service {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(140, 133, 255, 0.18);
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: var(--secondary);
+        }
+        .testimonial-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--secondary);
+            margin-top: 10px;
+        }
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .why-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(140, 133, 255, 0.25);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .why-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(45, 212, 191, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .why-content h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .why-content p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+        .cta {
+            text-align: center;
+            position: relative;
+        }
+        .cta-content { position: relative; z-index: 1; }
+        .cta-badge {
+            display: inline-block;
+            padding: 8px 18px;
+            background: rgba(255, 59, 48, 0.2);
+            border: 1px solid #FF3B30;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            animation: badge-pulse 2s ease-in-out infinite;
+        }
+        @keyframes badge-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(140, 133, 255, 0.35); }
+            50% { box-shadow: 0 0 25px rgba(140, 133, 255, 0.55); }
+        }
+        .cta h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        .cta-phone {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin: 20px 0;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-button-primary {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 40px;
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .cta-button-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(140, 133, 255, 0.55);
+        }
+        .cta-button-secondary {
+            padding: 16px 30px;
+            background: rgba(140, 133, 255, 0.18);
+            border: 1px solid var(--secondary);
+            border-radius: 40px;
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .cta-button-secondary:hover {
+            background: var(--secondary);
+            color: var(--teal-darker);
+        }
+        .footer {
+            background: rgba(3, 47, 64, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 60px 40px 30px;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+        .footer-brand h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .footer-brand p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .footer-phone {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        .footer-column h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        .footer-column a {
+            display: block;
+            color: var(--light);
+            text-decoration: none;
+            opacity: 0.7;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .footer-column a:hover {
+            opacity: 1;
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slide-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .slide-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .slide-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scale-up {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scale-up.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .rotate-in {
+            opacity: 0;
+            transform: rotate(-5deg) scale(0.9);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .rotate-in.visible {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+        }
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stagger-children.visible > *:nth-child(1) { transition-delay: 0.08s; }
+        .stagger-children.visible > *:nth-child(2) { transition-delay: 0.16s; }
+        .stagger-children.visible > *:nth-child(3) { transition-delay: 0.24s; }
+        .stagger-children.visible > *:nth-child(4) { transition-delay: 0.32s; }
+        .stagger-children.visible > *:nth-child(5) { transition-delay: 0.4s; }
+        .stagger-children.visible > *:nth-child(6) { transition-delay: 0.48s; }
+        .stagger-children.visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .profile-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(140, 133, 255, 0.35);
+        }
+        .vicente-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .rain-drop {
+            position: fixed;
+            width: 3px;
+            height: 4px;
+            background: linear-gradient(to bottom, rgba(140, 133, 255, 0.8), rgba(140, 133, 255, 0.2));
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+        }
+        @keyframes rain-fall {
+            0% { top: -10px; opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { top: 100vh; opacity: 0; }
+        }
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #0a5a7a 0%, #032f40 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--light);
+        }
+        .loader-bar {
+            width: 180px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loader-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0;
+            animation: load 1.5s ease-out forwards;
+        }
+        @keyframes load { to { width: 100%; } }
+        .water-droplet {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.6), rgba(45, 212, 191, 0.3));
+            pointer-events: none;
+            z-index: 9998;
+            animation: droplet-fall 1.5s ease-in forwards;
+        }
+        @keyframes droplet-fall {
+            0% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.3) translateY(150px); }
+        }
+        @media (max-width: 1024px) {
+            .about { grid-template-columns: 1fr; text-align: center; }
+            .about-highlights { justify-content: center; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .why-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav { padding: 15px 20px; }
+            .nav-logo { font-size: 0.95rem; }
+            .nav-phone { padding: 8px 15px; font-size: 0.85rem; }
+            .section { padding: 80px 25px; }
+            .progress-indicator { right: 15px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 20px; }
+            .footer-content { grid-template-columns: 1fr; gap: 30px; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .custom-cursor, .cursor-trail-dot { display: none; }
+            body { cursor: auto; }
         }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-text">Cargando animación...</div>
-        <div class="loading-progress" id="loadingProgress">0%</div>
-        <div class="loading-bar">
-            <div class="loading-bar-fill" id="loadingBarFill"></div>
+    <div class="loader" id="loader">
+        <div class="loader-text">Cargando...</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+
+    <canvas id="antigravity-canvas"></canvas>
+    <canvas class="droplets-canvas" id="droplets-canvas"></canvas>
+    <div class="custom-cursor" id="cursor"></div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot active" data-section="1">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="2">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="3">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="4">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="5">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="6">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
+        </div>
+        <div class="progress-dot" data-section="7">
+            <span class="progress-drop"></span><span class="progress-drop"></span><span class="progress-drop"></span>
         </div>
     </div>
 
     <nav class="nav">
-        <a href="#" class="nav-logo">
-            <img src="https://assets.zyrosite.com/5SVCo0KGnglwB9nV/fontaneriia-vicente-XdKkx5hV2W1SwOO0.webp" alt="">
-            <span class="nav-logo-name">Fontanería Vicente</span>
+        <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 12px;">
+            <img src="https://assets.zyrosite.com/5SVCo0KGnglwB9nV/fontaneriia-vicente-XdKkx5hV2W1SwOO0.webp" alt="Fontanería Vicente" style="width: 45px; height: auto; object-fit: contain;">
+            <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 1.05rem; font-weight: 700;">Fontanería Vicente</span>
+                <span style="font-size: 0.7rem; opacity: 0.7;">Valencia · 675 87 93 29</span>
+            </div>
         </a>
-        <a href="tel:675879329" class="nav-phone">📞 675 87 93 29</a>
+        <a href="tel:675879329" class="nav-phone">
+            <span class="icon">📞</span>
+            <span>675 87 93 29</span>
+        </a>
     </nav>
 
-    <div class="scroll-indicator" id="scrollIndicator">
-        <div class="scroll-mouse"></div>
-        <div class="scroll-text">SCROLL</div>
-    </div>
+    <main class="main-content">
+        <!-- SCROLL ANIMATION SECTION - PRIMERA SECCIÓN -->
+        <section class="scroll-animation-section" id="section-1">
+            <div class="scroll-loading-overlay" id="scrollLoadingOverlay">
+                <div class="scroll-loading-text">CARGANDO ANIMACIÓN</div>
+                <div class="scroll-loading-progress" id="scrollLoadingProgress">0%</div>
+                <div class="scroll-loading-bar">
+                    <div class="scroll-loading-bar-fill" id="scrollLoadingBarFill"></div>
+                </div>
+            </div>
 
-    <div class="frame-counter" id="frameCounter">0 / 302</div>
+            <div class="video-scroll-indicator" id="videoScrollIndicator">
+                <div class="video-scroll-mouse"></div>
+                <div class="video-scroll-text">Scroll para ver</div>
+            </div>
 
-    <section class="scroll-section" id="scrollSection">
-        <div class="canvas-container">
-            <canvas id="animationCanvas"></canvas>
+            <div class="video-frame-counter" id="videoFrameCounter">0 / 302</div>
+
+            <div class="scroll-animation-container">
+                <canvas id="videoCanvas"></canvas>
+            </div>
+        </section>
+
+        <section class="section" id="section-2">
+            <h2 class="section-title scale-up">Servicios Profesionales</h2>
+            <p class="section-subtitle fade-in">Soluciones completas de fontanería para hogar y negocio en Valencia</p>
+
+            <div class="services-grid stagger-children">
+                <div class="service-card">
+                    <div class="service-icon">🚰</div>
+                    <h3 class="service-title">Reparación de Tuberías</h3>
+                    <p class="service-desc">Detección y reparación de fugas, roturas de tuberías, empalmes. Trabajo garantizado.</p>
+                    <div class="service-price">Desde 45€</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title">Urgencias 24h</h3>
+                    <p class="service-desc">Servicio de emergencia disponible 24 horas. Llegamos en menos de 45 minutos.</p>
+                    <div class="service-price">Urgencia: +25€</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3 class="service-title">Instalaciones</h3>
+                    <p class="service-desc">Instalación completa de baños, cocinas, calderas, grifos y sanitarios.</p>
+                    <div class="service-price">Presupuesto gratis</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚽</div>
+                    <h3 class="service-title">Desatascos</h3>
+                    <p class="service-desc">Desatascos de WC, fregaderos, duchas y tuberías con equipo profesional.</p>
+                    <div class="service-price">Desde 50€</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💧</div>
+                    <h3 class="service-title">Fugas de Agua</h3>
+                    <p class="service-desc">Localización y reparación de fugas con tecnología de detección avanzada.</p>
+                    <div class="service-price">Desde 60€</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔥</div>
+                    <h3 class="service-title">Agua Caliente</h3>
+                    <p class="service-desc">Reparación e instalación de calderas, termos y sistemas de agua caliente.</p>
+                    <div class="service-price">Desde 55€</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="section-3">
+            <div class="about">
+                <div class="about-image slide-left">
+                    <div class="about-image-wrapper">
+                        <div class="about-image-placeholder">VT</div>
+                    </div>
+                    <div class="about-experience-badge">15+ Años</div>
+                </div>
+
+                <div class="about-content slide-right">
+                    <h2>Vicente Tomás<br><span style="color: var(--secondary);">Tu fontanero de confianza</span></h2>
+                    <p>
+                        Hola, soy Vicente. Llevo más de 15 años trabajando como fontanero en Valencia y alrededores.
+                        Empecé este oficio por pasión, y cada día me esfuerzo en dar el mejor servicio a mis vecinos.
+                    </p>
+                    <p>
+                        Mi filosofía es simple: trabajo bien, precio justo y trato cercano. No te cobro nada que no necesites,
+                        y siempre explico qué voy a hacer antes de empezar. La confianza se gana día a día.
+                    </p>
+
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <span class="icon">✓</span>
+                            <span>Precios transparentes</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="icon">✓</span>
+                            <span>Garantía por escrito</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="icon">✓</span>
+                            <span>Disponible 24/7</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="icon">✓</span>
+                            <span>Valencia y provincia</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="15">0</div>
+                    <div class="stat-label">Años de experiencia</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Clientes atendidos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="98">0%</div>
+                    <div class="stat-label">Satisfacción</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="24">0/7</div>
+                    <div class="stat-label">Urgencias</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="section-4">
+            <h2 class="section-title scale-up">¿Cómo trabajamos?</h2>
+            <p class="section-subtitle fade-in">Un proceso simple, transparente y sin sorpresas</p>
+
+            <div class="process-timeline stagger-children">
+                <div class="process-step slide-up">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Me llamas o escribes</h3>
+                        <p>Contacta al 675 87 93 29. Te contesto rápido, mismo día si es urgente.</p>
+                        <span class="step-time">⏱️ Respuesta: 5-30 min</span>
+                    </div>
+                </div>
+                <div class="process-step slide-up">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Paso a revisar</h3>
+                        <p>Voy a tu domicilio o negocio, evaluó el problema y te explico qué hay que hacer.</p>
+                        <span class="step-time">📍 Desplazamiento por Valencia</span>
+                    </div>
+                </div>
+                <div class="process-step slide-up">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Presupuesto claro</h3>
+                        <p>Te doy un precio detallado antes de empezar. No hay sorpresas.</p>
+                        <span class="step-time">💰 Precios justos y cerrados</span>
+                    </div>
+                </div>
+                <div class="process-step slide-up">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Problema resuelto</h3>
+                        <p>Hago el trabajo limpio y rápido. Te explico qué he hecho y te doy garantía por escrito.</p>
+                        <span class="step-time">✅ Garantía incluida</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="section-5">
+            <h2 class="section-title rotate-in">¿Por qué Vicente?</h2>
+            <p class="section-subtitle fade-in">Lo que me diferencia de otros fontaneros</p>
+
+            <div class="why-grid stagger-children">
+                <div class="why-card">
+                    <div class="why-icon">🏠</div>
+                    <div class="why-content">
+                        <h3>Trabajo limpio</h3>
+                        <p>Cuido tu casa como si fuera la mía. Dejo todo limpio después de cada intervención.</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">💬</div>
+                    <div class="why-content">
+                        <h3>Trato cercano</h3>
+                        <p>Soy una persona real, no una gran empresa. Me importa que quedes satisfecho.</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">📋</div>
+                    <div class="why-content">
+                        <h3>Presupuesto sin compromiso</h3>
+                        <p>Te visito, evalúo y te doy precio. Si no te convence, nada pasa. Sin coste.</p>
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">🛡️</div>
+                    <div class="why-content">
+                        <h3>Garantía por escrito</h3>
+                        <p>Todo el trabajo tiene garantía. Si surge lo mismo, lo arreglo sin coste.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section testimonials-section" id="section-6">
+            <div class="testimonials-header scale-up">
+                <div class="google-rating">
+                    <svg class="google-logo" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span class="rating-score">5.0</span>
+                    <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                    <span class="rating-count">(47 reseñas)</span>
+                </div>
+                <h2 class="section-title" style="margin-bottom: 5px;">Lo que dicen mis clientes</h2>
+                <p class="section-subtitle" style="margin-bottom: 25px;">Reseñas reales de Google · Verificadas</p>
+            </div>
+
+            <div class="testimonials-grid stagger-children">
+                <div class="testimonial-card slide-left">
+                    <div class="testimonial-header">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="Kevin Ubeda Crespo" class="profile-image">
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Kevin Ubeda Crespo</div>
+                            <div class="testimonial-date">hace 2 semanas · 8 reseñas</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Contacté con Vicente porque tenía un problema con el grifo en casa de mi abuela y la verdad es que la experiencia fue de 10. Respondió súper rápido y en muy poco tiempo ya estaba allí para arreglarlo. Se nota que sabe lo que hace: trabajó limpio y rápido. Muy recomendable."
+                    </p>
+                    <div class="testimonial-verified">❤️ 1</div>
+                </div>
+
+                <div class="testimonial-card slide-up">
+                    <div class="testimonial-header">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Alicia Martínez" class="profile-image">
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Alicia Martínez</div>
+                            <div class="testimonial-date">hace 3 semanas · 1 reseña</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Un servicio excelente. Cuesta mucho encontrar fontaneros que trasmitan tanta confianza y hagan el trabajo tan bien. Volveré a llamarles. Gracias"
+                    </p>
+                    <div class="testimonial-verified">❤️ 2</div>
+                </div>
+
+                <div class="testimonial-card slide-right">
+                    <div class="testimonial-header">
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Carmen Maria Pascual Bosch" class="profile-image">
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Carmen Maria Pascual Bosch</div>
+                            <div class="testimonial-date">hace 3 semanas · 2 reseñas</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Muy buen trabajo, han desembozado el fregadero a la perfección y han cambiado los grifos de mi casa. Muy simpáticos y el precio super bien."
+                    </p>
+                    <div class="testimonial-verified">❤️ 1</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section cta" id="section-7">
+            <div class="cta-content">
+                <div class="cta-badge scale-up">🚨 Urgencia 24h</div>
+                <h2 class="fade-in">¿Problema de fontanería?</h2>
+                <p style="opacity: 0.8; margin-bottom: 10px;">No lo dejes pasar. Cuanto antes me llames, antes solucionamos el problema.</p>
+                <a href="tel:675879329" class="cta-phone scale-up">675 87 93 29</a>
+                <p style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px;">Atención personal en Valencia y provincia</p>
+
+                <div class="cta-buttons fade-in">
+                    <a href="tel:675879329" class="cta-button-primary">📞 Llamar ahora</a>
+                    <a href="https://wa.me/34675879329" target="_blank" class="cta-button-secondary">💬 WhatsApp</a>
+                </div>
+
+                <p class="slide-up" style="margin-top: 25px; opacity: 0.6; font-size: 0.8rem;">
+                    Disponible 24 horas · Domingos y festivos · Presupuesto sin compromiso
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <img src="https://assets.zyrosite.com/5SVCo0KGnglwB9nV/fontaneriia-vicente-XdKkx5hV2W1SwOO0.webp" alt="Fontanería Vicente" style="width: 40px; height: auto; object-fit: contain;">
+                    <h3 style="margin: 0;">Vicente Tomás</h3>
+                </div>
+                <p>Más de 15 años dando servicio de fontanería en Valencia. Precios justos, trabajo garantizado y trato cercano.</p>
+                <div class="footer-phone">📞 675 87 93 29</div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Servicios</h4>
+                <a href="#">Reparación de fugas</a>
+                <a href="#">Urgencias 24h</a>
+                <a href="#">Instalaciones</a>
+                <a href="#">Desatascos</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Servicios</h4>
+                <a href="#">Calderas</a>
+                <a href="#">Agua caliente</a>
+                <a href="#">Grifería</a>
+                <a href="#">Reformas baño</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <a href="tel:675879329">📞 675 87 93 29</a>
+                <a href="#">Valencia, España</a>
+                <a href="#">Lun - Sáb: 8:00 - 20:00</a>
+                <a href="#">Dom: Urgencias 24h</a>
+            </div>
         </div>
-    </section>
+
+        <div class="footer-bottom">
+            <p>© 2026 Fontanería Vicente Tomás. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
     <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const cursor = document.getElementById('cursor');
+        const trailDots = [];
+        const maxTrailDots = 8;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            const dot = document.createElement('div');
+            dot.className = 'cursor-trail-dot';
+            dot.style.left = mouseX + 'px';
+            dot.style.top = mouseY + 'px';
+            document.body.appendChild(dot);
+            trailDots.push(dot);
+
+            setTimeout(() => {
+                dot.style.transform = 'scale(0)';
+                dot.style.opacity = '0';
+            }, 100);
+
+            setTimeout(() => {
+                dot.remove();
+            }, 400);
+
+            if (trailDots.length > maxTrailDots) {
+                trailDots.shift().remove();
+            }
+        });
+
+        const hoverElements = document.querySelectorAll('a, button, .service-card, .testimonial-card, .why-card, .progress-dot');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        document.addEventListener('click', (e) => {
+            for (let i = 0; i < 4; i++) {
+                const droplet = document.createElement('div');
+                droplet.className = 'water-droplet';
+                const size = Math.random() * 8 + 4;
+                droplet.style.width = size + 'px';
+                droplet.style.height = size + 'px';
+                droplet.style.left = (e.clientX + (Math.random() - 0.5) * 25) + 'px';
+                droplet.style.top = e.clientY + 'px';
+                document.body.appendChild(droplet);
+                setTimeout(() => droplet.remove(), 1500);
+            }
+        });
+
+        function createRainDrop() {
+            const drop = document.createElement('div');
+            drop.className = 'rain-drop';
+            drop.style.left = Math.random() * 100 + 'vw';
+            const duration = Math.random() * 2 + 1.5;
+            drop.style.animation = `rain-fall ${duration}s linear forwards`;
+            document.body.appendChild(drop);
+            setTimeout(() => drop.remove(), (duration + 0.5) * 1000);
+        }
+
+        setInterval(createRainDrop, 150);
+
+        // ===== SCROLL ANIMATION WITH VIDEO FRAMES =====
         const VIDEO_CONFIG = {
             totalFrames: 302,
             width: 480,
-            height: 640
+            height: 640,
+            frameRate: 30
         };
 
-        const state = {
+        const videoState = {
             frames: [],
             currentFrame: 0,
             lastDrawnFrame: -1,
-            isLoading: true
+            isLoading: true,
+            scrollIndicatorVisible: true
         };
 
-        const canvas = document.getElementById('animationCanvas');
-        const ctx = canvas.getContext('2d');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingProgress = document.getElementById('loadingProgress');
-        const loadingBarFill = document.getElementById('loadingBarFill');
-        const scrollIndicator = document.getElementById('scrollIndicator');
-        const frameCounter = document.getElementById('frameCounter');
-        const scrollSection = document.getElementById('scrollSection');
+        const videoCanvas = document.getElementById('videoCanvas');
+        const videoCtx = videoCanvas.getContext('2d');
+        const scrollLoadingOverlay = document.getElementById('scrollLoadingOverlay');
+        const scrollLoadingProgress = document.getElementById('scrollLoadingProgress');
+        const scrollLoadingBarFill = document.getElementById('scrollLoadingBarFill');
+        const videoScrollIndicator = document.getElementById('videoScrollIndicator');
+        const videoFrameCounter = document.getElementById('videoFrameCounter');
+        const scrollSection = document.querySelector('.scroll-animation-section');
 
-        function setupCanvas() {
+        function setupVideoCanvas() {
             const dpr = window.devicePixelRatio || 1;
-            const maxWidth = window.innerWidth;
-            const maxHeight = window.innerHeight;
+            const maxWidth = window.innerWidth * 0.9;
+            const maxHeight = window.innerHeight * 0.9;
 
             const videoAspect = VIDEO_CONFIG.width / VIDEO_CONFIG.height;
             const viewportAspect = maxWidth / maxHeight;
@@ -211,60 +1446,58 @@
                 displayWidth = maxHeight * videoAspect;
             }
 
-            canvas.style.width = displayWidth + 'px';
-            canvas.style.height = displayHeight + 'px';
-            canvas.width = displayWidth * dpr;
-            canvas.height = displayHeight * dpr;
-            ctx.scale(dpr, dpr);
+            videoCanvas.style.width = displayWidth + 'px';
+            videoCanvas.style.height = displayHeight + 'px';
+            videoCanvas.width = displayWidth * dpr;
+            videoCanvas.height = displayHeight * dpr;
+            videoCtx.scale(dpr, dpr);
         }
 
-        async function preloadFrames() {
-            let loaded = 0;
+        async function preloadVideoFrames() {
+            const totalFrames = VIDEO_CONFIG.totalFrames;
+            const frames = [];
 
-            for (let i = 1; i <= VIDEO_CONFIG.totalFrames; i++) {
+            for (let i = 1; i <= totalFrames; i++) {
                 const frameNumber = i.toString().padStart(4, '0');
-                const framePath = 'frames/frame_' + frameNumber + '.png';
+                const framePath = `frames/frame_${frameNumber}.png`;
 
                 const img = new Image();
+                img.src = framePath;
 
-                await new Promise((resolve) => {
-                    img.onload = () => {
-                        state.frames.push(img);
-                        loaded++;
-                        const progress = Math.round((loaded / VIDEO_CONFIG.totalFrames) * 100);
-                        loadingProgress.textContent = progress + '%';
-                        loadingBarFill.style.width = progress + '%';
-                        resolve();
-                    };
-                    img.onerror = () => {
-                        state.frames.push(null);
-                        resolve();
-                    };
-                    img.src = framePath;
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
                 });
+
+                frames.push(img);
+
+                const progress = Math.round((i / totalFrames) * 100);
+                scrollLoadingProgress.textContent = progress + '%';
+                scrollLoadingBarFill.style.width = progress + '%';
             }
 
-            state.isLoading = false;
+            videoState.frames = frames;
+            videoState.isLoading = false;
 
             setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 300);
+                scrollLoadingOverlay.classList.add('hidden');
+            }, 500);
         }
 
-        function drawFrame(frameIndex) {
-            if (state.isLoading || frameIndex === state.lastDrawnFrame) return;
+        function drawVideoFrame(frameIndex) {
+            if (videoState.isLoading || frameIndex === videoState.lastDrawnFrame) return;
 
-            const frame = state.frames[frameIndex];
+            const frame = videoState.frames[frameIndex];
             if (!frame) return;
 
-            const displayWidth = parseFloat(canvas.style.width);
-            const displayHeight = parseFloat(canvas.style.height);
+            const displayWidth = parseFloat(videoCanvas.style.width);
+            const displayHeight = parseFloat(videoCanvas.style.height);
 
-            ctx.clearRect(0, 0, displayWidth, displayHeight);
-            ctx.drawImage(frame, 0, 0, displayWidth, displayHeight);
+            videoCtx.clearRect(0, 0, displayWidth, displayHeight);
+            videoCtx.drawImage(frame, 0, 0, displayWidth, displayHeight);
 
-            state.lastDrawnFrame = frameIndex;
-            frameCounter.textContent = (frameIndex + 1) + ' / ' + VIDEO_CONFIG.totalFrames;
+            videoState.lastDrawnFrame = frameIndex;
+            videoFrameCounter.textContent = `${frameIndex + 1} / ${VIDEO_CONFIG.totalFrames}`;
         }
 
         function getFrameFromScroll() {
@@ -278,23 +1511,25 @@
             let scrollFraction = scrolled / scrollableDistance;
             scrollFraction = Math.max(0, Math.min(1, scrollFraction));
 
-            return Math.floor(scrollFraction * (VIDEO_CONFIG.totalFrames - 1));
+            const frameIndex = Math.floor(scrollFraction * (VIDEO_CONFIG.totalFrames - 1));
+            return frameIndex;
         }
 
         let ticking = false;
 
-        function onScroll() {
-            if (window.scrollY > 100) {
-                scrollIndicator.classList.add('fade-out');
+        function onVideoScroll() {
+            if (videoState.scrollIndicatorVisible && window.scrollY > 100) {
+                videoScrollIndicator.classList.add('fade-out');
+                videoState.scrollIndicatorVisible = false;
             }
 
             if (!ticking) {
                 requestAnimationFrame(() => {
                     const frameIndex = getFrameFromScroll();
 
-                    if (frameIndex !== state.currentFrame) {
-                        state.currentFrame = frameIndex;
-                        drawFrame(frameIndex);
+                    if (frameIndex !== videoState.currentFrame) {
+                        videoState.currentFrame = frameIndex;
+                        drawVideoFrame(frameIndex);
                     }
 
                     ticking = false;
@@ -304,20 +1539,277 @@
             }
         }
 
-        async function init() {
-            setupCanvas();
-            await preloadFrames();
-            drawFrame(0);
-
-            window.addEventListener('scroll', onScroll, { passive: true });
+        async function initVideoAnimation() {
+            setupVideoCanvas();
+            await preloadVideoFrames();
+            drawVideoFrame(0);
+            window.addEventListener('scroll', onVideoScroll, { passive: true });
 
             window.addEventListener('resize', () => {
-                setupCanvas();
-                drawFrame(state.currentFrame);
+                setupVideoCanvas();
+                drawVideoFrame(videoState.currentFrame);
             });
         }
 
-        init();
+        initVideoAnimation();
+
+        // ===== ANTIGRAVITY EFFECT =====
+        const canvas = document.getElementById('antigravity-canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        if (gl) {
+            const vsSource = `attribute vec4 aVertexPosition;void main(){gl_Position=aVertexPosition;}`;
+
+            const fsSource = `
+                precision mediump float;
+                uniform vec2 uResolution;
+                uniform float uTime;
+                uniform vec2 uMouse;
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy/uResolution.xy;
+                    vec2 mouse = uMouse/uResolution.xy;
+
+                    vec3 darkBlue=vec3(0.02,0.18,0.25);
+                    vec3 midBlue=vec3(0.05,0.35,0.45);
+                    vec3 lightBlue=vec3(0.12,0.55,0.70);
+                    vec3 brightBlue=vec3(0.22,0.74,0.97);
+
+                    float gradient=length(uv-0.5)*1.5;
+                    vec3 baseColor=mix(lightBlue,darkBlue,gradient);
+
+                    float wave1=sin(uv.x*12.0+uTime*0.7)*0.015;
+                    float wave2=sin(uv.y*10.0+uTime*0.5)*0.015;
+                    float wave3=sin((uv.x+uv.y)*8.0+uTime*0.6)*0.01;
+
+                    float dist=distance(uv,mouse);
+                    float cursorInfluence=smoothstep(0.35,0.0,dist);
+
+                    float cursorWave=sin(dist*25.0-uTime*4.0)*cursorInfluence*0.15;
+
+                    vec2 pushDir=normalize(uv-mouse);
+                    float pushAmount=cursorInfluence*0.08;
+                    vec2 pushedUV=uv+pushDir*pushAmount;
+
+                    float colorShift=cursorInfluence*0.4;
+                    vec3 distortedColor=baseColor;
+                    distortedColor.r+=sin(uTime*2.0+uv.y*12.0)*colorShift;
+                    distortedColor.g+=cos(uTime*2.0+uv.x*10.0)*colorShift;
+                    distortedColor.b+=sin(uTime*1.5+(uv.x+uv.y)*8.0)*colorShift;
+
+                    float totalDistortion=wave1+wave2+wave3+cursorWave;
+
+                    vec3 finalColor=mix(baseColor,distortedColor,totalDistortion+cursorInfluence*0.5);
+                    finalColor=mix(finalColor,brightBlue,cursorInfluence*0.6);
+
+                    float shimmer=sin(uv.x*50.0+uv.y*50.0+uTime*2.0)*0.02*(1.0-cursorInfluence*0.5);
+                    finalColor+=shimmer;
+
+                    float vignette=1.0-gradient*0.5;
+                    finalColor*=vignette;
+
+                    gl_FragColor=vec4(finalColor,1.0);
+                }
+            `;
+
+            function compileShader(source, type) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            }
+
+            const vertexShader = compileShader(vsSource, gl.VERTEX_SHADER);
+            const fragmentShader = compileShader(fsSource, gl.FRAGMENT_SHADER);
+
+            const program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+            gl.useProgram(program);
+
+            const positions = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+            const positionLocation = gl.getAttribLocation(program, 'aVertexPosition');
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            const uResolution = gl.getUniformLocation(program, 'uResolution');
+            const uTime = gl.getUniformLocation(program, 'uTime');
+            const uMouse = gl.getUniformLocation(program, 'uMouse');
+
+            function render(time) {
+                time *= 0.001;
+                gl.uniform2f(uResolution, canvas.width, canvas.height);
+                gl.uniform1f(uTime, time);
+                gl.uniform2f(uMouse, mouseX, canvas.height - mouseY);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        }
+
+        // ===== WATER DROPLETS =====
+        const dropletsCanvas = document.getElementById('droplets-canvas');
+        const dropletsCtx = dropletsCanvas.getContext('2d');
+
+        function resizeDropletsCanvas() {
+            dropletsCanvas.width = window.innerWidth;
+            dropletsCanvas.height = window.innerHeight;
+            generateDroplets();
+        }
+
+        let droplets = [];
+
+        function generateDroplets() {
+            droplets = [];
+            const numDroplets = Math.floor((dropletsCanvas.width * dropletsCanvas.height) / 10000);
+
+            for (let i = 0; i < numDroplets; i++) {
+                droplets.push({
+                    x: Math.random() * dropletsCanvas.width,
+                    y: Math.random() * dropletsCanvas.height,
+                    radius: Math.random() * 6 + 2,
+                    opacity: Math.random() * 0.4 + 0.1,
+                    shimmerOffset: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function drawDroplets(time) {
+            dropletsCtx.clearRect(0, 0, dropletsCanvas.width, dropletsCanvas.height);
+
+            droplets.forEach(droplet => {
+                const shimmer = Math.sin(time * 0.001 + droplet.shimmerOffset) * 0.15 + 0.85;
+
+                const gradient = dropletsCtx.createRadialGradient(
+                    droplet.x - droplet.radius * 0.3,
+                    droplet.y - droplet.radius * 0.3,
+                    0,
+                    droplet.x,
+                    droplet.y,
+                    droplet.radius
+                );
+
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${droplet.opacity * shimmer * 0.7})`);
+                gradient.addColorStop(0.5, `rgba(140, 133, 255, ${droplet.opacity * 0.25})`);
+                gradient.addColorStop(1, `rgba(103, 61, 230, ${droplet.opacity * 0.05})`);
+
+                dropletsCtx.beginPath();
+                dropletsCtx.arc(droplet.x, droplet.y, droplet.radius, 0, Math.PI * 2);
+                dropletsCtx.fillStyle = gradient;
+                dropletsCtx.fill();
+
+                dropletsCtx.beginPath();
+                dropletsCtx.arc(
+                    droplet.x - droplet.radius * 0.3,
+                    droplet.y - droplet.radius * 0.3,
+                    droplet.radius * 0.25,
+                    0,
+                    Math.PI * 2
+                );
+                dropletsCtx.fillStyle = `rgba(255, 255, 255, ${droplet.opacity * shimmer * 0.4})`;
+                dropletsCtx.fill();
+            });
+
+            requestAnimationFrame((t) => drawDroplets(t));
+        }
+
+        resizeDropletsCanvas();
+        window.addEventListener('resize', resizeDropletsCanvas);
+        requestAnimationFrame((t) => drawDroplets(t));
+
+        // ===== SCROLL ANIMATIONS =====
+        const animatedElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .slide-up, .scale-up, .rotate-in, .stagger-children');
+
+        const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        animatedElements.forEach(el => animationObserver.observe(el));
+
+        // ===== PROGRESS INDICATOR =====
+        const sections = document.querySelectorAll('.section, .scroll-animation-section');
+        const progressDots = document.querySelectorAll('.progress-dot');
+
+        progressDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const sectionNum = dot.dataset.section;
+                const targetSection = document.getElementById(`section-${sectionNum}`);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    const sectionNum = sectionId.split('-')[1];
+
+                    progressDots.forEach(dot => {
+                        dot.classList.remove('active');
+                        if (dot.dataset.section === sectionNum) {
+                            dot.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // ===== STATS COUNTER =====
+        const statNumbers = document.querySelectorAll('.stat-number');
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    entry.target.classList.add('counted');
+
+                    const rawValue = entry.target.textContent;
+                    const target = parseInt(entry.target.dataset.target);
+                    const hasSuffix = rawValue.includes('%') || rawValue.includes('/');
+
+                    let current = 0;
+                    const increment = target / 40;
+                    const duration = 1200;
+                    const stepTime = duration / 40;
+
+                    const counter = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(counter);
+                        }
+
+                        let suffix = '';
+                        if (rawValue.includes('%')) suffix = '%';
+                        else if (rawValue.includes('/')) suffix = '/7';
+
+                        entry.target.textContent = Math.floor(current) + suffix;
+                    }, stepTime);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statNumbers.forEach(stat => statsObserver.observe(stat));
     </script>
 </body>
 </html>
